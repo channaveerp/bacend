@@ -1,0 +1,4 @@
+1.create file index.js
+2.npm init -y install
+3.npm i express mongoose dotenv nodemon
+4.
