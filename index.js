@@ -3,6 +3,10 @@ const app = express();
 const mongoose = require('mongoose');
 const userrouter = require('./routes/User');
 const authrouter = require('./routes/auth');
+const productsrouter = require('./routes/Product');
+const cartrouter = require('./routes/Cart');
+const ordersrouter = require('./routes/Order');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -11,9 +15,12 @@ app.use(express.json());
 
 app.use('/api/users', userrouter);
 app.use('/api/auth', authrouter);
+app.use('/api/products', productsrouter);
+app.use('/api/orders', ordersrouter);
+app.use('/api/carts', cartrouter);
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, async () => {  
+app.listen(PORT, async () => {
   try {
     await mongoose.connect(process.env.MONGODB);
     console.log('DB connected Succsfully');

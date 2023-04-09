@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../model/User');
-var CryptoJS = require('crypto-js');
+const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 // REGISTE
 router.post('/register', async (req, res) => {
@@ -26,6 +27,14 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.json_sec_key,
+      { expiresIn: '2d' }
+    );
     if (!user) {
       return res.status(401).json({ message: 'user does not exist' });
     }
@@ -39,7 +48,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'wrong password' });
     } else {
       const { password, ...others } = user._doc;
-      return res.status(200).json(others);
+      return res.status(200).json({...others , accessToken});
     }
   } catch (err) {
     res.status(500).json({ message: 'internal sever error' });
